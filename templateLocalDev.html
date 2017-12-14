@@ -2,7 +2,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Date Calculator</title>
+<title>mojage Portal</title>
 
 <link href="https://cdn.muicss.com/mui-0.9.7/css/mui.min.css" rel="stylesheet" type="text/css">
 
@@ -15,9 +15,8 @@
 <!-- React + ReactRouter + Redux + ReduxSaga -->
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.1/react.min.js"></script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.1/react-dom.min.js"></script>
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/react-router/4.2.0/react-router.min.js"></script>
+<!-- <script defer src="https://cdnjs.cloudflare.com/ajax/libs/react-router-dom/4.2.2/react-router-dom.js"></script> -->
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/redux/3.6.0/redux.min.js"></script>
-<script defer src="https://cdn.jsdelivr.net/npm/redux-actions@2.2.1/lib/index.min.js"></script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/react-redux/5.0.1/react-redux.min.js"></script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/redux-saga/0.14.0/redux-saga.min.js"></script>
 
@@ -27,9 +26,192 @@
 
 <!-- app -->
 <script type="text/babel">
+const { Appbar, Tabs, Tab, Container, Input, Button } = mui.react;
+const { createStore } = Redux;
+const { Provider, connect } = ReactRedux;
+
+// ========app================================
+// --------Header--------------------------------
+class Header extends React.Component {
+  render(){
+    return(
+      <div>
+      <Appbar>
+        <h1 className="mui--appbar-height">MOJAGE PORTAL</h1>
+      </Appbar>
+      </div>
+    );
+  }
+}
+
+// --------Content--------------------------------
+class Content extends React.Component {
+  onChange(i, value, tab, ev) {
+    console.log(arguments);
+  }
+
+  onActive(tab) {
+    console.log(arguments);
+  }
+  render(){
+    return(
+      <div>
+        <Tabs onChange={this.onChange} defaultSelectedIndex={0}>
+          <Tab value="TASK-tab" label="TASK" onActive={this.onActive}><TaskPage/></Tab>
+          <Tab value="LINK-tab" label="LINK" onActive={this.onActive}><LinkPage/></Tab>
+          <Tab value="PASSWORD-tab" label="PASSWORD" onActive={this.onActive}><PasswordPage/></Tab>
+        </Tabs>
+      </div>
+    );
+  }
+}
+
+// --------TaskPage--------------------------------
+class TaskPage extends React.Component {
+  render(){
+    return(
+      <div>
+        <h2 className="mui--text-accent mui--text-headline">TASK PAGE</h2>
+        <Container></Container>
+      </div>
+    );
+  }
+}
+
+// --------LinkPage--------------------------------
+class LinkPage extends React.Component {
+  render(){
+    return(
+      <div>
+        <h2 className="mui--text-accent mui--text-headline">Link PAGE</h2>
+        <Container></Container>
+      </div>
+    );
+  }
+}
+
+// --------PasswordPage--------------------------------
+class PasswordComponent extends React.Component {
+  dubble(e){
+    this.props.dubble(this.refs.inputText.value);
+  }
+  triple(e){
+    this.props.triple(this.refs.inputText.value);
+    console.log(this.refs.inputText.value)
+  }
+  render(){
+    return(
+      <div>
+        <h2 className="mui--text-accent mui--text-headline">Password PAGE</h2>
+        <Container>
+          <input type="text" label="input numbers here." floatingLabel={true} defaultValue="" ref="inputText" />
+          <Button onClick={this.dubble.bind(this)} variant="raised">2倍</Button>
+          <Button onClick={this.triple.bind(this)} variant="raised">3倍</Button>
+          <br />
+          {this.props.value}
+        </Container>
+      </div>
+    );
+  }
+}
+const mapStateToProps = state => {
+  return {
+    value: state.value
+  };
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    dubble(value){
+      dispatch(dubble(value));
+    },
+    triple(value){
+      dispatch(triple(value));
+    }    
+  };
+}
+
+const PasswordPage = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(PasswordComponent);
+
+
+// --------Footer--------------------------------
+class Footer extends React.Component {
+  render(){
+    return(
+      <div className="mui--text-light-secondary" style={{backgroundColor: '#444'}}>Copyright &copy; 2017 mojage All Rights Reserved.</div>
+    );
+  }
+}
+
+// --------App--------------------------------
+class App extends React.Component {
+  render(){
+    return(
+      <div>
+        <Header />
+        <Content />
+        <Footer />
+      </div>
+    );
+  }
+}
+
+// ========ActionCreator================================
+const dubble = value => {
+  return {
+    type: "DUBBLE",
+    value
+  }
+}
+const triple = value => {
+  return {
+    type: "TRIPLE",
+    value
+  }
+}
+
+// ========Reducer================================
+const reducer = (state, action) => {
+  switch (action.type) {
+    case "DUBBLE":
+      return (
+        Object.assign({}, state, {value: action.value * 2})
+      );
+    case "TRIPLE":
+      return (
+        Object.assign({}, state, {value: action.value * 3})
+      );
+    default:
+      return state;
+  }
+}
+
+// ========index================================
+
+const initialState = {
+  value: ""
+};
+
+const store = createStore(reducer, initialState);
+
+ReactDOM.render(
+  <Provider store={ store }>
+    <App />
+  </Provider>,
+  document.getElementById("root")
+);
 
 </script>
 </head>
 <body>
-
+<div id="root">
+  <div style="display: table; width: 100%; height: 120px;">
+    <div style="display: table-cell; text-align: center; vertical-align: middle;">
+      <span style="font-size: 40px;">Now Loading ...</span>
+    </div>
+  </div>
+</div>
 </body>
